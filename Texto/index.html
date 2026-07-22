@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contador de caracteres en tiempo real</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  .panel {
+    background: #101820;
+    border-radius: 20px;
+    padding: 30px 25px;
+    width: 420px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    border: 1px solid #2a3a44;
+  }
+
+  .panel h1 {
+    color: #f5f5f5;
+    font-size: 18px;
+    text-align: center;
+    margin: 0 0 20px;
+    letter-spacing: 1px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 140px;
+    resize: vertical;
+    background: #1c2b34;
+    border: 1px solid #2f3f49;
+    border-radius: 12px;
+    color: #f5f5f5;
+    font-size: 15px;
+    font-family: inherit;
+    padding: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus {
+    border-color: #f5c518;
+  }
+
+  .info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #7a8a94;
+  }
+
+  .counter {
+    font-weight: 700;
+    color: #f5c518;
+  }
+
+  .counter.warning {
+    color: #ff9800;
+  }
+
+  .counter.limit {
+    color: #e53935;
+  }
+
+  .bar {
+    margin-top: 10px;
+    height: 6px;
+    background: #1c2b34;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    width: 0%;
+    background: #f5c518;
+    transition: width 0.15s, background 0.15s;
+  }
+
+  .bar-fill.warning {
+    background: #ff9800;
+  }
+
+  .bar-fill.limit {
+    background: #e53935;
+  }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <h1>Escribe tu mensaje</h1>
+
+  <textarea id="texto" maxlength="200" placeholder="Empieza a escribir..."></textarea>
+
+  <div class="bar">
+    <div class="bar-fill" id="barFill"></div>
+  </div>
+
+  <div class="info">
+    <span id="palabras">0 palabras</span>
+    <span><span class="counter" id="contador">0</span> / <span id="max">200</span> caracteres</span>
+  </div>
+</div>
+
+<script>
+  const MAX_LENGTH = 200;
+
+  const textoEl = document.getElementById('texto');
+  const contadorEl = document.getElementById('contador');
+  const barFillEl = document.getElementById('barFill');
+  const palabrasEl = document.getElementById('palabras');
+
+  document.getElementById('max').textContent = MAX_LENGTH;
+
+  function actualizarContador() {
+    const longitud = textoEl.value.length;
+    const porcentaje = (longitud / MAX_LENGTH) * 100;
+
+    contadorEl.textContent = longitud;
+    barFillEl.style.width = porcentaje + '%';
+
+    const palabras = textoEl.value.trim() === '' ? 0 : textoEl.value.trim().split(/\s+/).length;
+    palabrasEl.textContent = palabras + (palabras === 1 ? ' palabra' : ' palabras');
+
+    contadorEl.classList.remove('warning', 'limit');
+    barFillEl.classList.remove('warning', 'limit');
+
+    if (longitud >= MAX_LENGTH) {
+      contadorEl.classList.add('limit');
+      barFillEl.classList.add('limit');
+    } else if (porcentaje >= 80) {
+      contadorEl.classList.add('warning');
+      barFillEl.classList.add('warning');
+    }
+  }
+
+  textoEl.addEventListener('input', actualizarContador);
+
+  actualizarContador();
+</script>
+
+</body>
+</html>
