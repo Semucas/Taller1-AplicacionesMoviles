@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teclado Virtual Bancario</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  .panel {
+    background: #101820;
+    border-radius: 20px;
+    padding: 30px 25px;
+    width: 320px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    border: 1px solid #2a3a44;
+  }
+
+  .panel h1 {
+    color: #f5f5f5;
+    font-size: 18px;
+    text-align: center;
+    margin: 0 0 20px;
+    letter-spacing: 1px;
+  }
+
+  .display {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #1c2b34;
+    border: 1px solid #3a4a54;
+    transition: background 0.2s;
+  }
+
+  .dot.filled {
+    background: #f5c518;
+    border-color: #f5c518;
+  }
+
+  .keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .key {
+    padding: 18px 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #f5f5f5;
+    background: #1c2b34;
+    border: 1px solid #2f3f49;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.08s, background 0.15s;
+  }
+
+  .key:hover {
+    background: #24343e;
+  }
+
+  .key:active {
+    transform: scale(0.94);
+    background: #2f3f49;
+  }
+
+  .key.action {
+    font-size: 14px;
+    color: #f5c518;
+  }
+
+  .key.empty {
+    visibility: hidden;
+  }
+
+  .msg {
+    margin-top: 18px;
+    text-align: center;
+    color: #7a8a94;
+    font-size: 12px;
+    min-height: 16px;
+  }
+
+  .msg.success {
+    color: #4caf50;
+  }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <h1>Ingrese su clave</h1>
+
+  <div class="display" id="display"></div>
+
+  <div class="keypad" id="keypad"></div>
+
+  <div class="msg" id="msg">Los números se mezclan tras cada pulsación</div>
+</div>
+
+<script>
+  const PIN_LENGTH = 4;
+  const CORRECT_PIN = '1234';
+
+  const displayEl = document.getElementById('display');
+  const keypadEl = document.getElementById('keypad');
+  const msgEl = document.getElementById('msg');
+
+  let entered = '';
+
+  function renderDisplay() {
+    displayEl.innerHTML = '';
+    for (let i = 0; i < PIN_LENGTH; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i < entered.length ? ' filled' : '');
+      displayEl.appendChild(dot);
+    }
+  }
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function renderKeypad() {
+    keypadEl.innerHTML = '';
+    const digits = shuffle(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
+
+    const layout = [...digits.slice(0, 9), 'borrar', digits[9], 'ok'];
+
+    layout.forEach(value => {
+      const btn = document.createElement('div');
+      btn.textContent = value === 'borrar' ? '⌫' : value === 'ok' ? 'OK' : value;
+      btn.className = 'key' + (value === 'borrar' || value === 'ok' ? ' action' : '');
+
+      btn.addEventListener('click', () => handleKey(value));
+      keypadEl.appendChild(btn);
+    });
+  }
+
+  function handleKey(value) {
+    if (value === 'borrar') {
+      entered = entered.slice(0, -1);
+      setMsg('Los números se mezclan tras cada pulsación', false);
+    } else if (value === 'ok') {
+      checkPin();
+      return;
+    } else {
+      if (entered.length < PIN_LENGTH) {
+        entered += value;
+      }
+      setMsg('Los números se mezclan tras cada pulsación', false);
+    }
+
+    renderDisplay();
+    renderKeypad();
+
+    if (entered.length === PIN_LENGTH) {
+      checkPin();
+    }
+  }
+
+  function checkPin() {
+    if (entered.length !== PIN_LENGTH) {
+      setMsg('Ingrese los ' + PIN_LENGTH + ' dígitos', false);
+      return;
+    }
+    if (entered === CORRECT_PIN) {
+      setMsg('Clave correcta ✔', true);
+    } else {
+      setMsg('Clave incorrecta, intente de nuevo', false);
+    }
+    entered = '';
+    renderDisplay();
+    renderKeypad();
+  }
+
+  function setMsg(text, success) {
+    msgEl.textContent = text;
+    msgEl.classList.toggle('success', success);
+  }
+
+  renderDisplay();
+  renderKeypad();
+</script>
+
+</body>
+</html>

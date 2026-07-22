@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navbar con scroll suave</title>
+<style>
+  * {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #2c2c2c;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 30px;
+    background: rgba(20, 20, 30, 0.92);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  nav .brand {
+    color: #fff;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+
+  nav ul {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav ul li a {
+    color: #d8d8d8;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 6px 4px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  nav ul li a:hover,
+  nav ul li a.active {
+    color: #f5c518;
+    border-color: #f5c518;
+  }
+
+  section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px 60px;
+    text-align: center;
+  }
+
+  section h2 {
+    font-size: 42px;
+    margin-bottom: 10px;
+  }
+
+  section p {
+    max-width: 500px;
+    color: #555;
+    font-size: 16px;
+  }
+
+  #inicio { background: #fefefe; }
+  #servicios { background: #f0f4f8; }
+  #nosotros { background: #e8ecef; }
+  #contacto { background: #dde3e8; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">MiBanco</div>
+  <ul>
+    <li><a href="#inicio" class="nav-link active">Inicio</a></li>
+    <li><a href="#servicios" class="nav-link">Servicios</a></li>
+    <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+    <li><a href="#contacto" class="nav-link">Contacto</a></li>
+  </ul>
+</nav>
+
+<section id="inicio">
+  <div>
+    <h2>Inicio</h2>
+    <p>Bienvenido a nuestro sitio. Desplázate para ver el navbar fijo con scroll suave entre secciones.</p>
+  </div>
+</section>
+
+<section id="servicios">
+  <div>
+    <h2>Servicios</h2>
+    <p>Conoce los servicios bancarios que ofrecemos: cuentas, tarjetas, créditos y más.</p>
+  </div>
+</section>
+
+<section id="nosotros">
+  <div>
+    <h2>Nosotros</h2>
+    <p>Somos una entidad comprometida con la seguridad y la innovación digital.</p>
+  </div>
+</section>
+
+<section id="contacto">
+  <div>
+    <h2>Contacto</h2>
+    <p>Comunícate con nosotros para más información sobre nuestros productos.</p>
+  </div>
+</section>
+
+<script>
+  const links = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('section');
+
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top <= 100 && rect.bottom >= 100) {
+        current = section.id;
+      }
+    });
+
+    links.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>
