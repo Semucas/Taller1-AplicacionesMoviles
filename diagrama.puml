@@ -1,0 +1,274 @@
+@startuml
+title Diagrama de Clases UML\nPelícula: Spider-Man: Into the Spider-Verse
+
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+skinparam class {
+  BackgroundColor<<Heroe>> #E8F5E9
+  BorderColor<<Heroe>> #2E7D32
+
+  BackgroundColor<<Aracnida>> #E3F2FD
+  BorderColor<<Aracnida>> #1565C0
+
+  BackgroundColor<<Villano>> #FDEAEA
+  BorderColor<<Villano>> #B71C1C
+
+  BackgroundColor<<Base>> #EAF2FF
+  BorderColor<<Base>> #1E5AA8
+
+  BackgroundColor<<Interfaz>> #F3E5F5
+  BorderColor<<Interfaz>> #6A1B9A
+
+  BackgroundColor<<Universo>> #FFF3E0
+  BorderColor<<Universo>> #EF6C00
+}
+
+' =========================
+' INTERFACES
+' =========================
+
+interface ICombatiente <<Interfaz>> {
+  +atacar(objetivo: Personaje): void
+  +defenderse(): void
+}
+
+interface IViajeroDimensional <<Interfaz>> {
+  +viajarA(destino: Universo): void
+  +estabilizarMultiverso(sincronizacion: boolean): boolean
+}
+
+' =========================
+' CLASE BASE
+' =========================
+
+abstract class Personaje <<Base>> {
+  #nombre: String
+  #edad: int
+  #alineacion: String
+  #universoOrigen: Universo
+
+  +Personaje(nombre: String, edad: int, universoOrigen: Universo)
+  +Personaje(nombre: String, universoOrigen: Universo)
+
+  +presentarse(): String
+  +actuar(): String
+}
+
+' =========================
+' UNIVERSO
+' =========================
+
+class Universo <<Universo>> {
+  -codigo: String
+  -nombre: String
+  -anio: int
+
+  {static} +ESTABILIDAD_MAXIMA: int = 100
+
+  +Universo(codigo: String, nombre: String, anio: int)
+  +agregarPersonaje(personaje: Personaje): void
+  +estaEstable(): boolean
+  +obtenerDescripcion(): String
+}
+
+' =========================
+' CLASE ABSTRACTA ARACNIDA
+' =========================
+
+abstract class PersonaAracnida <<Aracnida>> {
+  #nivelExperiencia: int
+  #sentidoAracnidoActivo: boolean
+  #usaMascara: boolean
+
+  {static} +MAX_CARGA_TELARANA: int = 100
+
+  +PersonaAracnida(nombre: String, edad: int, universoOrigen: Universo, experiencia: int)
+  +PersonaAracnida(nombre: String, universoOrigen: Universo)
+
+  +balancearse(): void
+
+  +lanzarTelaranas(): void
+  +lanzarTelaranas(tipo: String): void
+
+  +atacar(objetivo: Personaje): void
+  +defenderse(): void
+
+  +viajarA(destino: Universo): void
+  +estabilizarMultiverso(sincronizacion: boolean): boolean
+
+  +actuar(): String
+}
+
+' =========================
+' HEROES ARACNIDOS
+' =========================
+
+class PeterParker <<Heroe>> {
+  -nivelMentoria: int
+
+  +PeterParker()
+  +PeterParker(nombre: String, edad: int, universoOrigen: Universo)
+
+  +entrenar(miles: MilesMorales): void
+  +improvisarPlan(): void
+  +actuar(): String
+}
+
+class MilesMorales <<Heroe>> {
+  -camuflajeActivo: boolean
+  -descargaVenom: int
+
+  +MilesMorales()
+  +MilesMorales(nombre: String, edad: int, universoOrigen: Universo)
+
+  +usarCamuflaje(): void
+  +usarDescargaVenom(): void
+  +usarDescargaVenom(intensidad: int): void
+  +actuar(): String
+}
+
+class GwenStacy <<Heroe>> {
+  -precisionCombate: int
+
+  +GwenStacy()
+  +GwenStacy(nombre: String, edad: int, universoOrigen: Universo)
+
+  +pirueta(): void
+  +apoyarEquipo(): void
+  +actuar(): String
+}
+
+class PeniParker <<Heroe>> {
+  -sincronizacionRobot: double
+
+  +PeniParker()
+  +PeniParker(nombre: String, edad: int, universoOrigen: Universo)
+
+  +pilotarRobot(): void
+  +analizarSistema(): void
+  +actuar(): String
+}
+
+class CerdoArana <<Heroe>> {
+  -nivelComedia: int
+
+  +CerdoArana()
+  +CerdoArana(nombre: String, edad: int, universoOrigen: Universo)
+
+  +usarSartenazo(): void
+  +distraerEnemigo(): void
+  +actuar(): String
+}
+
+class HombreAranaNoir <<Heroe>> {
+  -experienciaDetective: int
+
+  +HombreAranaNoir()
+  +HombreAranaNoir(nombre: String, edad: int, universoOrigen: Universo)
+
+  +investigarPista(): void
+  +atacar(): String
+  +actuar(): String
+}
+
+' =========================
+' CLASE ABSTRACTA VILLANO
+' =========================
+
+abstract class Villano <<Villano>> {
+  #nivelAmenaza: int
+  #objetivoPrincipal: String
+
+  +Villano(nombre: String, edad: int, universoOrigen: Universo, amenaza: int)
+  +Villano(nombre: String)
+
+  +perseguir(objetivo: Personaje): void
+  +atacar(objetivo: Personaje): void
+  +defenderse(): void
+  +actuar(): String
+}
+
+' =========================
+' VILLANOS
+' =========================
+
+class Kingpin <<Villano>> {
+  -recursosFinancieros: double
+
+  +Kingpin()
+  +Kingpin(nombre: String, edad: int, universoOrigen: Universo)
+
+  +controlarColisionador(): void
+  +amenazar(): String
+  +actuar(): String
+}
+
+class Merodeador <<Villano>> {
+  -sigilo: int
+
+  +Merodeador()
+  +Merodeador(nombre: String, edad: int, universoOrigen: Universo)
+
+  +rastrear(objetivo: Personaje): void
+  +emboscar(objetivo: Personaje): void
+  +actuar(): String
+}
+
+class DoctorOctopus <<Villano>> {
+  -numeroBrazosMecanicos: int
+
+  +DoctorOctopus()
+  +DoctorOctopus(nombre: String, edad: int, universoOrigen: Universo)
+
+  +capturar(objetivo: Personaje): void
+  +usarBrazosMecanicos(): void
+  +actuar(): String
+}
+
+' =========================
+' HERENCIA
+' =========================
+
+Personaje <|-- PersonaAracnida
+Personaje <|-- Villano
+
+PersonaAracnida <|-- PeterParker
+PersonaAracnida <|-- MilesMorales
+PersonaAracnida <|-- GwenStacy
+PersonaAracnida <|-- PeniParker
+PersonaAracnida <|-- CerdoArana
+PersonaAracnida <|-- HombreAranaNoir
+
+Villano <|-- Kingpin
+Villano <|-- Merodeador
+Villano <|-- DoctorOctopus
+
+' =========================
+' INTERFACES
+' =========================
+
+PersonaAracnida ..|> ICombatiente
+PersonaAracnida ..|> IViajeroDimensional
+
+Villano ..|> ICombatiente
+
+Kingpin ..|> IViajeroDimensional
+
+' =========================
+' RELACIONES ENTRE CLASES
+' =========================
+
+Universo "1" o-- "0..*" Personaje : contiene
+Personaje --> "1" Universo : universoOrigen
+
+PersonaAracnida --> "0..*" Villano : enfrenta
+Villano --> "0..*" Personaje : ataca
+
+PeterParker --> MilesMorales : mentor de
+PeniParker --> Universo : sincroniza tecnologia
+Kingpin --> Universo : altera estabilidad
+DoctorOctopus --> Kingpin : trabaja para
+
+@enduml
